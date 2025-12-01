@@ -17,9 +17,9 @@ nu scripts/init.nu
 ```
 
 ## Run a Solution
-
+this will run day 1 part 1
 ```bash
-ocaml solutions/day01.ml 1 inputs/day01.txt
+nu scripts/run.nu 1 1
 ```
 
 * First argument: `1` or `2` for part 1 or part 2
