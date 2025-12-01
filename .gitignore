@@ -1,1 +1,4 @@
 inputs/
+*.cmi
+*.cmo
+build/

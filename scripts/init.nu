@@ -2,7 +2,7 @@ let file_dirs = [inputs solutions build scripts bin]
 
 let max_days = 25
 
-let year = 2025 
+let year = $env.AOC_YEAR 
 
 let session = $env.AOC_SESSION
 
