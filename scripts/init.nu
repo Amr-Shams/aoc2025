@@ -2,6 +2,10 @@ let file_dirs = [inputs solutions build scripts bin]
 
 let max_days = 25
 
+let year = 2025 
+
+let session = $env.AOC_SESSION
+
 # define a func that takes the file_dirs and creates them if not exist
 def create_dirs [dirs: list<string>] {
   for dir in $dirs {
@@ -34,25 +38,33 @@ let () =
   | _ -> failwith (*\"Part must be 1 or 2\"*)
 
 '
+
+
+
 def init_day [day: int] {
-  let d = (fmt-day $day)
+    let d = (fmt-day $day)
 
-  let sol = $"solutions/day($d).ml"
-  let inp = $"inputs/day($d).txt"
-  let build_placeholder = $"build/day($d)"
+    let sol = $"solutions/day($d).ml"
+    let inp = $"inputs/day($d).txt"
+    let build_placeholder = $"build/day($d)"
 
-  if not ($sol | path exists) {
-    $init_content | save $sol
-  }
+    if not ($sol | path exists) {
+        $init_content | save $sol
+    }
 
-  if not ($inp | path exists) {
-      "" | save $inp
-  }
+    if not ($inp | path exists) {
+        if $session != "" {
+            curl $"https://adventofcode.com/$year/day/$day/input" -H $"Cookie: session=$session" | save $inp
+            print $"Fetched input for day $day"
+        }
+    }
 
-  if not ($build_placeholder | path exists) {
-      "" | save $build_placeholder
-  }
+    # Create build placeholder if it doesn't exist
+    if not ($build_placeholder | path exists) {
+        "" | save $build_placeholder
+    }
 }
+
 
 export def main [] {
   let root = $env.PWD
