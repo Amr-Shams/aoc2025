@@ -4,6 +4,7 @@ def format-day [day:int] {
   if $day < 10 { $"0($day)" } else { $"($day)" }
 }
 let year = $env.AOC_YEAR 
+let root = $env.PWD
 def get_mtime [file:string] {
     if ($file | path exists) {
             ( ls $file | get modified)
@@ -32,12 +33,24 @@ def run_day [day:int, part:int] {
         }
     }
 
+    let util_src = "lib/util.ml"
+    let util_cmo = "lib/util.cmo"
+
+    # Compile Util module if necessary
+    if (not ( ($util_cmo) | path exists) or ((get_mtime $util_src) > (get_mtime $util_cmo))) {
+        print $"Compiling dependency: ($util_src)..."
+        do {
+            cd lib
+            ocamlc -c util.ml
+        }
+    }
+
     let src_mtime = (get_mtime $src)
     let exe_mtime = (get_mtime $exe)
 
+    # Compile day's solution if necessary
     if (not ($exe | path exists) or ($src_mtime > $exe_mtime)) {
       print $"Compiling ($src)..."
-      print $"Executable ($exe)..."
       do {
         cd build
         ocamlc -I ../lib -o $"day($day_str)" ../lib/util.cmo $"../($src)"

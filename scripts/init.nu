@@ -1,4 +1,4 @@
-let file_dirs = [inputs solutions build scripts bin]
+let file_dirs = [inputs solutions build scripts bin lib]
 
 let max_days = 25
 
@@ -60,8 +60,8 @@ def init_day [day: int] {
     }
     if not ($inp | path exists) {
         if $session != "" {
-            curl $"https://adventofcode.com/$year/day/$day/input" -H $"Cookie: session=$session" | save $inp
-            print $"Fetched input for day $day"
+            curl $"https://adventofcode.com/($year)/day/($day)/input" -H $"Cookie: session=($session)" | save $inp
+            print $"Fetched input for day ($day)"
         }
     }
 
