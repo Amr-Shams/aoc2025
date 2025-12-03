@@ -18,5 +18,36 @@ let read_file filename process_line =
     close_in_noerr ic; 
     raise e
 
+  (* max of a list *)
+let rec max_list list = 
+  match list with  
+  | [] -> failwith "max_list called on empty list"
+  | [x] -> x 
+  | h :: t -> 
+      let max_tail = max_list t in
+      if h > max_tail then h else max_tail 
 
+  (* min of a list *)
+let rec min_list list = 
+  match list with  
+  | [] -> failwith "min_list called on empty list"
+  | [x] -> x 
+  | h :: t -> 
+      let min_tail = min_list t in
+      if h < min_tail then h else min_tail
+
+  (* find the max value index in a list *)
+let index_of_max arr =
+  let max_i = ref 0 in
+  for i = 1 to Array.length arr - 1 do
+    if arr.(i) > arr.(!max_i) then max_i := i
+  done;
+  !max_i 
+(* only works on digits strings like '1234' *)
+let digits_of_string s =
+  s
+  |> String.to_seq
+  |> Seq.filter (fun c -> c >= '0' && c <= '9')
+  |> Seq.map (fun c -> Char.code c - 48)
+  |> Array.of_seq
 
