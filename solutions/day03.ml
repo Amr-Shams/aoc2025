@@ -32,16 +32,12 @@ let part2 file =
     let num = ref 0 in
     let start_pos = ref 0 in
     
-    for i = 0 to 11 do  
-      let remaining = 12 - i - 1 in  
-      let search_end = n - remaining in  
-      
+    for i = 12 downto 1 do  
+      let search_end = n - i + 1 in  
       let search_range = Array.sub digits !start_pos (search_end - !start_pos) in
       let max_index_in_range = Util.index_of_max search_range in
       let actual_index = !start_pos + max_index_in_range in
-      
-      let selected_digit = digits.(actual_index) in
-      num := (!num * 10) + selected_digit;
+      num := (!num * 10) + (digits.(actual_index));
       
       start_pos := actual_index + 1  
     done;
