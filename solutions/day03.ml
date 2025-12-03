@@ -24,7 +24,31 @@ let part1 file =
   string_of_int !total
 
 let part2 file =
-  "TODO: implement part 2"
+  let total = ref 0 in
+  Util.read_file file (fun line ->
+    let digits = Util.digits_of_string line in
+    let n = Array.length digits in
+    
+    let num = ref 0 in
+    let start_pos = ref 0 in
+    
+    for i = 0 to 11 do  
+      let remaining = 12 - i - 1 in  
+      let search_end = n - remaining in  
+      
+      let search_range = Array.sub digits !start_pos (search_end - !start_pos) in
+      let max_index_in_range = Util.index_of_max search_range in
+      let actual_index = !start_pos + max_index_in_range in
+      
+      let selected_digit = digits.(actual_index) in
+      num := (!num * 10) + selected_digit;
+      
+      start_pos := actual_index + 1  
+    done;
+    
+    total := !total + !num
+  );
+  string_of_int !total
 
 let () =
   if Array.length Sys.argv < 3 then
