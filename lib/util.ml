@@ -1,4 +1,16 @@
 (* Shared module for AoC 2025 *)
+(* 8-direction movement: N, NE, E, SE, S, SW, W, NW *)
+let directions8 : (int * int) array =
+  [|
+    (-1,  0);  (* N  *)
+    (-1,  1);  (* NE *)
+    ( 0,  1);  (* E  *)
+    ( 1,  1);  (* SE *)
+    ( 1,  0);  (* S  *)
+    ( 1, -1);  (* SW *)
+    ( 0, -1);  (* W  *)
+    (-1, -1);  (* NW *)
+  |]
 
 let rec process_lines ic process_line =
   try
@@ -18,7 +30,17 @@ let read_file filename process_line =
     close_in_noerr ic; 
     raise e
 
-  (* max of a list *)
+let read_file_matrix filename split_chars_of_string =
+  let matrix = ref [] in
+  read_file filename (fun line ->
+    matrix := (split_chars_of_string line) :: !matrix
+  );
+  List.rev !matrix
+
+
+
+
+(* max of a list *)
 let rec max_list list = 
   match list with  
   | [] -> failwith "max_list called on empty list"
@@ -51,3 +73,11 @@ let digits_of_string s =
   |> Seq.map (fun c -> Char.code c - 48)
   |> Array.of_seq
 
+(* char arry from string  *)
+
+let char_array_of_string s = 
+  let arr = Array.make (String.length s) ' ' in
+  for i = 0 to String.length s - 1 do
+    arr.(i) <- s.[i]
+  done;
+  arr
