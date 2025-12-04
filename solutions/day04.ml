@@ -45,7 +45,37 @@ let part2 file =
       end
     done 
   done;
-  "TODO: implement part 2"
+  
+  (* BFS over @  *)
+  let queue = Queue.create () in 
+  for x = 0 to rows - 1 do
+    for y = 0 to cols - 1 do
+      if matrix.(x).(y) = '@' && neighbor_count.(x).(y) < 4 then begin
+        Queue.add (x, y) queue
+      end 
+    done 
+  done;
+  let removed = ref 0 in 
+  while not (Queue.is_empty queue) do
+    let (x,y) = Queue.take queue in 
+    if matrix.(x).(y) = '@' then begin 
+      (* remove it aka change to .   *)
+      matrix.(x).(y) <- '.';
+      incr removed;
+      Array.iter (fun (dx, dy) ->
+        let nx = x + dx in
+        let ny = y + dy in
+        if nx >= 0 && nx < rows && ny >= 0 && ny < cols then
+          if matrix.(nx).(ny) = '@' then begin
+            neighbor_count.(nx).(ny) <- neighbor_count.(nx).(ny) - 1;
+            if neighbor_count.(nx).(ny) < 4 then begin
+              Queue.add (nx,ny) queue
+            end
+          end
+      ) Util.directions8
+    end 
+  done;
+  string_of_int (!removed)
 
 let () =
   if Array.length Sys.argv < 3 then
