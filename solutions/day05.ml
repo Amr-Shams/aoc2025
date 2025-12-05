@@ -26,22 +26,23 @@ end)
 type normalized_range_set = IntervalSet.t
 
 let insert_normalized ((s_new, e_new) : interval) (ranges : normalized_range_set) : normalized_range_set =
-  let (before, _present, overlap_and_after) = IntervalSet.split (s_new, max_int) ranges in 
   let overlaps = 
     IntervalSet.filter (fun (s_curr, e_curr) -> 
       s_new <= e_curr && e_new >= s_curr
-    ) overlap_and_after
+    ) ranges  
   in
+  
   let (merged_start, merged_end) = 
     IntervalSet.fold (fun (s_curr, e_curr) (acc_s, acc_e) ->
       (min acc_s s_curr), (max acc_e e_curr)
     ) overlaps (s_new, e_new) 
   in
+  
   let ranges_without_overlaps = 
-    IntervalSet.fold IntervalSet.remove overlaps overlap_and_after 
+    IntervalSet.fold IntervalSet.remove overlaps ranges 
   in
-  let final_set = IntervalSet.union before ranges_without_overlaps in
-  IntervalSet.add (merged_start, merged_end) final_set
+  
+  IntervalSet.add (merged_start, merged_end) ranges_without_overlaps
 
 let is_id_valid (id : int) (ranges : normalized_range_set) : bool =
   IntervalSet.exists (fun (start_id, end_id) ->
@@ -73,7 +74,27 @@ let part1 file =
   string_of_int !fresh_count
 
 let part2 file =
-  "TODO: implement part 2"
+  let space = ref 0 in 
+  let valid_ids = ref IntervalSet.empty in  
+  
+  Util.read_file file (fun line ->
+    if line = "" then 
+      space := !space + 1
+    else if !space = 0 then begin 
+      match String.split_on_char '-' line with  
+      | [num1_str; num2_str] ->
+          let num1 = int_of_string num1_str in
+          let num2 = int_of_string num2_str in 
+          valid_ids := insert_normalized (num1, num2) !valid_ids  
+      | _ -> ()  
+    end
+  );
+  (* Count total fresh IDs covered by all intervals *)
+  let total_fresh = IntervalSet.fold (fun (s, e) acc ->
+    acc + (e - s + 1)
+  ) !valid_ids 0 in
+  
+  string_of_int total_fresh
 
 let () =
   if Array.length Sys.argv < 3 then
