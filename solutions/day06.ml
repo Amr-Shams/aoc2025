@@ -37,7 +37,55 @@ let part1 file =
 
 
 let part2 file =
-  "TODO: implement part 2"
+  let allLines = ref [] in
+  Util.read_file file (fun line ->
+    allLines := line :: !allLines
+  );
+  let allLines = List.rev !allLines in
+  
+  if List.length allLines = 0 then
+    "0"
+  else begin
+    let num_rows = List.length allLines in
+    let ops_line = List.nth allLines (num_rows - 1) in  (* Last line has operators *)
+    let data_lines = List.filteri (fun i _ -> i < num_rows - 1) allLines in
+    
+    let cols = String.length ops_line in
+    
+    let grandTotal = ref 0 in
+    let current = ref [] in
+    
+    for i = cols - 1 downto 0 do
+      let operation = ops_line.[i] in
+      
+      let str = ref "" in
+      List.iter (fun line ->
+        if i < String.length line then
+          str := !str ^ String.make 1 line.[i]
+      ) data_lines;
+      
+      let trimmed = String.trim !str in
+      
+      if trimmed <> "" then begin
+        let digit = int_of_string trimmed in
+        current := !current @ [digit]
+      end;
+      
+      match operation with
+      | '+' ->
+          let sum = List.fold_left (+) 0 !current in
+          grandTotal := !grandTotal + sum;
+          current := []
+      | '*' ->
+          let prod = List.fold_left ( * ) 1 !current in
+          grandTotal := !grandTotal + prod;
+          current := []
+      | ' ' -> ()
+      | _ -> ()
+    done;
+    
+    string_of_int !grandTotal
+  end
 
 let () =
   if Array.length Sys.argv < 3 then

@@ -74,10 +74,20 @@ let digits_of_string s =
   |> Array.of_seq
 let split_line_to_strings line =
   line
-  |> String.trim
   |> String.split_on_char ' '
   |> List.filter (fun s -> s <> "")
 
+
+let split_line_to_strings_with_padding line =
+  let parts = line
+    |> String.split_on_char ' '
+    |> List.filter (fun s -> s <> "")
+  in
+  let max_len = List.fold_left (fun acc s -> max acc (String.length s)) 0 parts in
+  List.map (fun s -> 
+    let padding = String.make (max_len - String.length s) ' ' in
+    padding ^ s  
+  ) parts
 (* char arry from string  *)
 
 let char_array_of_string s = 
