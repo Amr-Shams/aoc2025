@@ -72,6 +72,11 @@ let digits_of_string s =
   |> Seq.filter (fun c -> c >= '0' && c <= '9')
   |> Seq.map (fun c -> Char.code c - 48)
   |> Array.of_seq
+let split_line_to_strings line =
+  line
+  |> String.trim
+  |> String.split_on_char ' '
+  |> List.filter (fun s -> s <> "")
 
 (* char arry from string  *)
 
