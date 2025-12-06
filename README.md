@@ -7,8 +7,12 @@
 2. Set your Advent of Code session:
 
 ```nu
-export AOC_SESSION="your_session_cookie"
+$env.AOC_SESSION="your_session_cookie"
 ````
+```nu
+$env.AOC_YEAR = 2025
+```
+
 
 ## Initialize Project
 
