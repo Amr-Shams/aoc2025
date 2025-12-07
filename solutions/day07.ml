@@ -1,10 +1,77 @@
 
 (* Day 07 template *)
 
-let part1 input =
-  "TODO: implement part 1"
+let part1 file =
+  (* Track the S column *)
+  let start_col = ref 0 in
 
-let part2 input =
+  let char_array_of_string s =
+    let arr = Array.make (String.length s) ' ' in
+    for j = 0 to String.length s - 1 do
+      if s.[j] = 'S' then start_col := j;
+      arr.(j) <- s.[j]
+    done;
+    arr
+  in
+
+  let matrix_list = Util.read_file_matrix file char_array_of_string in
+  let matrix = Array.of_list matrix_list in
+  let rows  = Array.length matrix in
+  let cols  = Array.length matrix.(0) in
+
+  (* visited state: (row, col) *)
+  let visited = Hashtbl.create (rows * cols) in
+  let rec beam x y = 
+    if x<0 || x>=rows || y<0 || y>=cols then 0 
+    else if Hashtbl.mem visited (x,y) then 0
+    else(
+      Hashtbl.add visited (x,y) ();
+      match matrix.(x).(y) with
+      |'.' | 'S' -> beam (x+1) y
+      |'^' -> 
+          let left = beam (x+1) (y-1) in
+          let right= beam (x+1) (y+1) in
+          1 + left + right
+      | _ -> 0
+    ) 
+  in 
+  string_of_int (beam 0 !start_col)
+
+let part2 file =
+  (* Track the S column *)
+  let start_col = ref 0 in
+
+  let char_array_of_string s =
+    let arr = Array.make (String.length s) ' ' in
+    for j = 0 to String.length s - 1 do
+      if s.[j] = 'S' then start_col := j;
+      arr.(j) <- s.[j]
+    done;
+    arr
+  in
+
+  let matrix_list = Util.read_file_matrix file char_array_of_string in
+  let matrix = Array.of_list matrix_list in
+  let rows  = Array.length matrix in
+  let cols  = Array.length matrix.(0) in
+
+  (* visited state: (row, col) *)
+  let visited = Hashtbl.create (rows * cols) in
+  let rec beam x y = 
+    if x<0 || x>=rows || y<0 || y>=cols then 0 
+    else if Hashtbl.mem visited (x,y) then 0
+    else(
+      Hashtbl.add visited (x,y) ();
+      match matrix.(x).(y) with
+      |'.' | 'S' -> beam (x+1) y
+      |'^' -> 
+          let left = beam (x+1) (y-1) in
+          let right= beam (x+1) (y+1) in
+          1 + left + right
+      | _ -> 0
+    ) 
+  in 
+  string_of_int (beam 0 !start_col)
   "TODO: implement part 2"
 
 let () =
@@ -13,13 +80,9 @@ let () =
 
   let part = Sys.argv.(1) in
   let file = Sys.argv.(2) in
-  let ic = open_in file in
-  let len = in_channel_length ic in
-  let input = really_input_string ic len in
-  close_in ic;
 
   match part with
-  | "1" -> print_endline (part1 input)
-  | "2" -> print_endline (part2 input)
+  | "1" -> print_endline (part1 file)
+  | "2" -> print_endline (part2 file)
   | _ -> failwith "Part must be 1 or 2"
 
