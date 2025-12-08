@@ -22,10 +22,10 @@ def fmt-day [day:int] {
 let template = '
 (* Day DAY template *)
 
-let part1 input =
+let part1 file =
   "TODO: implement part 1"
 
-let part2 input =
+let part2 file =
   "TODO: implement part 2"
 
 let () =
@@ -34,14 +34,10 @@ let () =
 
   let part = Sys.argv.(1) in
   let file = Sys.argv.(2) in
-  let ic = open_in file in
-  let len = in_channel_length ic in
-  let input = really_input_string ic len in
-  close_in ic;
 
   match part with
-  | "1" -> print_endline (part1 input)
-  | "2" -> print_endline (part2 input)
+  | "1" -> print_endline (part1 file)
+  | "2" -> print_endline (part2 file)
   | _ -> failwith "Part must be 1 or 2"
 
 '
