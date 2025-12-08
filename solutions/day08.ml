@@ -81,7 +81,7 @@ let part1 file =
   string_of_int ans
 
 let part2 file =
-    let points = ref [] in
+  let points = ref [] in
   Util.read_file file (fun line ->
       let nums = List.map int_of_string (String.split_on_char ',' line) in
       match nums with
@@ -92,34 +92,35 @@ let part2 file =
   let point_list = List.rev !points in
   let n = List.length point_list in
 
+  let point_array = Array.of_list point_list in
+
   let pairs = all_pairs point_list in
   let sorted_edges = sort_pairs pairs in
   
   let uf = Util.make_uf n in
   
-  let target_merges = n -1 in 
+  let target_merges = n - 1 in 
   let successful_merges = ref 0 in
   let last_connecting_edge = ref None in
+
   for i = 0 to Array.length sorted_edges - 1 do
     if !successful_merges < target_merges then
       let edge = sorted_edges.(i) in
       if Util.union uf edge.i edge.j then
           incr successful_merges;
           if !successful_merges = target_merges then
-            last_connecting_edge := Some edge;
-  done 
-  let ans = match !last_connecting_edge with
-  | None -> failwith "Could not connect all components."
-  | Some final_edge ->
-      let p1 = point_array.(final_edge.i) in
-      let p2 = point_array.(final_edge.j) in
-      let result = p1.x * p2.x in
-      result; 
-  string_of_int ans 
-
+            last_connecting_edge := Some edge
+  done;
   
-
-  "TODO: implement part 2"
+  let ans = match !last_connecting_edge with
+    | None -> failwith "Could not connect all components."
+    | Some final_edge ->
+        let p1 = point_array.(final_edge.i) in
+        let p2 = point_array.(final_edge.j) in
+        p1.x * p2.x
+  in
+  
+  string_of_int ans
 
 let () =
   if Array.length Sys.argv < 3 then
