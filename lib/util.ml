@@ -96,3 +96,35 @@ let char_array_of_string s =
     arr.(i) <- s.[i]
   done;
   arr
+
+
+
+type uf ={
+  parent:int array;
+  size:int array;
+}
+let make_uf n = { parent = Array.init n (fun i -> i); size = Array.make n 1 }
+let rec find uf x = 
+  if uf.parent.(x) = x then x
+  else(
+    uf.parent.(x)<- find uf uf.parent.(x);
+    uf.parent.(x)
+  )
+
+let union uf x y = 
+  let px = find uf x in
+  let py = find uf y in
+  if px = py then false 
+  else(
+    let size_x = uf.size.(px) in
+    let size_y = uf.size.(py) in
+    if size_x > size_y then (
+      uf.parent.(py) <- px;
+      uf.size.(px) <- size_x + size_y;
+    )else(
+      uf.parent.(px) <- py;
+      uf.size.(py) <- size_x + size_y;
+    );
+    true 
+  ) 
+
