@@ -193,24 +193,19 @@ def run_ocaml [day: int, part: int, config: record] {
   let src = $"solutions/day($d).ml"
   let exe = $"build/day($d)"
   let inp = $"inputs/day($d).txt"
-  
   let util = "lib/util.ml"
-  let util_cmo = "lib/util.cmo"
-  let util_cmi = "lib/util.cmi"
-  if ($util | path exists) and ((not ($util_cmi | path exists)) or ((get_mtime $util) > (get_mtime $util_cmi))) {
-    cd lib; ocamlc -c util.ml; cd ..
-  }
-  
-  if (not ($exe | path exists)) or ((get_mtime $src) > (get_mtime $exe)) {
-    cd build
-    if ($util_cmo | path exists) {
-      ocamlc -I ../lib -o $"day($d)" ../lib/util.cmo $"../($src)"
+
+  # We recompile if the executable doesn't exist, or if either of the
+  # source files (.ml) are newer than the executable.
+  let exe_mtime = (get_mtime $exe)
+  if (not ($exe | path exists)) or ((get_mtime $src) > $exe_mtime) or ((get_mtime $util) > $exe_mtime) {
+    if ( ($util | path exists)) {
+      ocamlc -I lib -o $exe $util $src
     } else {
-      ocamlc -o $"day($d)" $"../($src)"
+      ocamlc -o $exe $src
     }
-    cd ..
   }
-  
+
   ^$"./($exe)" $part $inp
 }
 
