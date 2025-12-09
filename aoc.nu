@@ -196,7 +196,8 @@ def run_ocaml [day: int, part: int, config: record] {
   
   let util = "lib/util.ml"
   let util_cmo = "lib/util.cmo"
-  if ($util | path exists) and ((not ($util_cmo | path exists)) or ((get_mtime $util) > (get_mtime $util_cmo))) {
+  let util_cmi = "lib/util.cmi"
+  if ($util | path exists) and ((not ($util_cmi | path exists)) or ((get_mtime $util) > (get_mtime $util_cmi))) {
     cd lib; ocamlc -c util.ml; cd ..
   }
   

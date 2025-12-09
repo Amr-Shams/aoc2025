@@ -4,36 +4,47 @@ type point = {
   x : int;
   y : int;
 }
+type pair_with_area = {
+  i: int; 
+  j: int; 
+  area : int;
+}
 
-let area p1 p2 = 
-  let ar = (p1.x - p2.x) * (p1.y - p2.y) in
-  if ar < 0 then -ar else ar 
+let area p1 p2 =
+  let dx = abs (p1.x - p2.x) in
+  let dy = abs (p1.y - p2.y) in
+  dx * dy
+
 let all_pairs points =
   let arr = Array.of_list points in
   let n = Array.length arr in
   let rec build i j acc =
     if i >= n then acc
     else if j >= n then
-      build (i + 1) (i + 2) acc
+      build (i + 1) (i + 1 + 1) acc
     else
-      let p1 = arr.(i) in 
-      let p2 = arr.(j) in 
-      let dist = distance p1 p2 in
-      build i (j + 1) ({i = i; j = j; dist=dist} :: acc)
+      let p1 = arr.(i)
+      and p2 = arr.(j) in
+      build i (j + 1) ({ i; j; area = area p1 p2 } :: acc)
   in
   build 0 1 []
 
+let sort_pairs pairs =
+  let arr = Array.of_list pairs in
+  Array.sort (fun a b -> compare a.area b.area) arr;
+  arr
 
 let part1 file =
-  let points = ref [] in 
-  Util.read_file file (fun line -> 
-    let nums = List.map int_of_string ( String.split_on_char ',' line) in
-    points := {x = List.nth nums 0; y = List.nth nums 1; z = List.nth nums 2} :: !points
+  let points = ref [] in
+  Util.read_file file (fun line ->
+    match List.map int_of_string (String.split_on_char ',' line) with
+    | [x; y] -> points := { x; y } :: !points
+    | _ -> failwith "invalid line"
   );
-  (* convert the list of points to array  *)
-  let array = Array.of_list !points in
-
-  "TODO: implement part 1"
+  let point_list = List.rev !points in
+  let pairs = all_pairs point_list in
+  let sorted = sort_pairs pairs in
+  string_of_int sorted.(0).area
 
 let part2 file =
   "TODO: implement part 2"
