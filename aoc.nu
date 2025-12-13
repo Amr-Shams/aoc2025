@@ -8,7 +8,7 @@ def get_config [] {
   {
     year: ($env.AOC_YEAR? | default "2024")
     session: ($env.AOC_SESSION? | default "")
-    max_days: 25
+    max_days: 12 
     directories: [inputs solutions build lib ]
     languages: {
       ocaml: {
